@@ -48,6 +48,63 @@ def get_cart():
     
     return jsonify({"success": True, "message": "Cart loaded.", "cart": cart}), 200
 
+@app.route("/cart", methods=["POST"])
+def add_to_cart():
+    data = request.json
+    if data is None:
+        return jsonify({"success": False, "message": "Invalid JSON"}), 400
+
+    # Get attributes from request
+    try: 
+        user_id = data["userId"]
+        flavor_id = data["flavorId"]
+    except KeyError:
+        return jsonify({"success": False, "message": "Missing JSON field(s)"}), 400 
+
+    # Get user
+    try:
+        user_data = users[user_id]
+    except KeyError:
+        return jsonify({"success": False, "message": "User not found"}), 404
+
+    # Get flavor
+    try:
+        with open("flavors.json") as file:
+            flavors_json = json.load(file)
+    except FileNotFoundError:
+        return jsonify({"success": False, "message": "Flavors data file not found"}), 404
+    except json.JSONDecodeError:
+        return jsonify({"success": False, "message": "Flavors data file is invalid"}), 500
+    
+    flavor_data = get_flavor_from_id(flavors_json, flavor_id)
+    if flavor_data is None:
+        return jsonify({"success": False, "message": "Flavor id is invalid"}), 400
+
+    # Add to cart
+    cart_flavor = get_flavor_from_id(user_data["cart"], flavor_id)
+    if cart_flavor is None:
+        user_data["cart"].append({
+            "flavorId": flavor_data["id"],
+            "name": flavor_data["name"],
+            "price": flavor_data["price"],
+            "quantity": 1
+        })
+    else:
+        cart_flavor["quantity"] += 1
+
+    return jsonify({"success": True, "message": "Flavor added to cart.", "cart": user_data["cart"]}), 200
+
+"""
+Helpers
+"""
+def get_flavor_from_id(json, id):
+    for flavor in json:
+        if flavor["id"] == id:
+            return flavor
+        
+    return None
+
+    
 """
 Startup
 """
