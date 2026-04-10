@@ -12,6 +12,8 @@ function Header() {
         <Link to="/">Home</Link>
         <Link to="/flavors">Flavors</Link>
         <Link to="/login">Login</Link>
+        <Link to="/signup">Signup</Link>
+        <Link to="/order_history">Order History</Link>
       </div>
     </>
   );
