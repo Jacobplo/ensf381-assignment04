@@ -180,7 +180,7 @@ def remove_from_cart():
     return jsonify({"success": True, "message": "Flavor removed from cart.", "cart": user_data["cart"]}), 200
 
 @app.route("/orders", methods=["GET"])
-def get_history():
+def get_order_history():
     user_id = request.args.get("userId", type=int)
     if user_id is None:
         return jsonify({"success": False, "message": "User id missing or incorrect"}), 400
