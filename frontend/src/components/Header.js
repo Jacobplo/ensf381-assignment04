@@ -14,14 +14,14 @@ function Header() {
     <>
       <header>
         <img src="/images/logo.webp" alt="Sweet Scoop" />
-        <h1>Sweet Scoop Ice Cream Shop</h1>
-        {userId ? <button onClick={handleLogout}>Logout</button> :<></>}
+        <h1>Sweet Scoop Ice Cream Shop</h1> 
+        {userId ? <button onClick={handleLogout}>Logout</button> : <></>}
       </header>
 
       <div className="navbar">
         <Link to="/">Home</Link>
         <Link to="/flavors">Flavors</Link>
-        <Link to="/login">Login</Link>
+        {userId ? <button onClick={handleLogout}>Logout</button> : <Link to="/login">Login</Link>} 
         <Link to="/signup">Signup</Link>
         <Link to="/order_history">Order History</Link>
       </div>

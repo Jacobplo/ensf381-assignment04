@@ -50,6 +50,15 @@ header button {
   margin: 0 10px;
 }
 
+.navbar button {
+  text-decoration: none;
+  color: #8b4a2b;
+  font-weight: bold;
+  margin: 0 10px;
+  font-size: inherit;
+  font-family: inherit;
+}
+
 /* Form styling */
 form {
   text-align: center;
