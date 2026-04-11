@@ -1,11 +1,21 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 function Header() {
+  const userId = localStorage.getItem("userId")
+
+  const navigate = useNavigate()
+
+  function handleLogout() {
+    localStorage.removeItem("userId");
+    navigate("/", { replace: true });
+  }
+
   return (
     <>
       <header>
         <img src="/images/logo.webp" alt="Sweet Scoop" />
         <h1>Sweet Scoop Ice Cream Shop</h1>
+        {userId ? <button onClick={handleLogout}>Logout</button> :<></>}
       </header>
 
       <div className="navbar">
