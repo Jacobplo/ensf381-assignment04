@@ -1,14 +1,17 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 function OrderHistory() {
   const [orders, setOrders] = useState([]);
   const [status, setStatus] = useState(null);
 
+  const navigate = useNavigate()
+
   useEffect(() => {
     const userId = localStorage.getItem("userId");
     if (!userId) {
       setStatus({ type: "error", message: "You must be logged in to view order history." });
-      return;
+      navigate("/login", { replace: true });
     }
 
     fetch(`http://localhost:5050/orders?userId=${userId}`)
