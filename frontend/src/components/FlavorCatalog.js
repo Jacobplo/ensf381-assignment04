@@ -22,7 +22,6 @@ function FlavorCatalog({ addToOrder }) {
       .catch(error => setMessage(error.message))
   })
   
-
   return (
     <>
 
