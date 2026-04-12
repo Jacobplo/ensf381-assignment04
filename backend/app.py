@@ -17,8 +17,17 @@ from datetime import datetime
 app = Flask(__name__)
 CORS(app)
 
-
-users = {} # Each item should map the actual user id to a dictionary in this form {"id": int, "username": str, "email": str, "password_hash": ..., "cart": [], "orders": []} 
+# Each item should map the actual user id to a dictionary in this form {"id": int, "username": str, "email": str, "password_hash": ..., "cart": [], "orders": []}
+users = {
+    1: {
+        "id": 1, 
+        "username": "admin", 
+        "email": "", 
+        "password_hash": bcrypt.hashpw("Admin12.".encode("utf-8"), bcrypt.gensalt()),
+        "cart": [],
+        "orders": []
+    }
+}  
 
 """
 Flask Routes
