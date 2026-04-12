@@ -1,19 +1,13 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 import FlavorItem from "./FlavorItem";
 
 function FlavorCatalog({ addToOrder }) {
   const [flavors, setFlavors] = useState([]);
-  const [message, setMessage] = useState(""); 
-  const userId = localStorage.getItem("userId");
+  const [status, setStatus] = useState(null);  
 
-  const navigate = useNavigate();
-
-  useEffect(() => {     
-    if (!userId) {
-      setMessage({ message: "You must be logged in to view order history." });
-      navigate("/login", { replace: true });
-    }
+  useEffect(() => {
+    const userId = localStorage.getItem("userId")
+    if (!userId) return;
 
     fetch("http://127.0.0.1:5050/flavors", { method: "GET" })
       .then(response => {
@@ -25,17 +19,24 @@ function FlavorCatalog({ addToOrder }) {
         }
       })
       .then(data => {
-        setMessage(data.message);
+        if (data.success) {
+
+        }
+        setStatus({success: data.success, message: data.message});
         setFlavors(data.flavors);
       })
-      .catch(error => setMessage(error.message))
-  }, [userId])
+      .catch(error => setStatus({success: false, message: "Could not connect to server."}))
+  }, []) 
   
   return (
     <>
       <h2>Ice Cream Flavors</h2>
+      {status && (
+        <p style={{ color: status.success === false ? "red" : "green" }}>
+          {status.message}
+        </p>
+      )}
       <div className="flavor-grid">
-
         {flavors.map(f => (
           <FlavorItem
             key={f.id}

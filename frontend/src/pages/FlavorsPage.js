@@ -3,14 +3,24 @@ import Header from "../components/Header";
 import Footer from "../components/Footer";
 import FlavorCatalog from "../components/FlavorCatalog";
 import OrderList from "../components/OrderList";
+import { useNavigate } from "react-router-dom";
 
 function FlavorsPage() {
   const [order, setOrder] = useState([]);
+  const [status, setStatus] = useState(null); 
+
   const userId = localStorage.getItem("userId");
 
+  const navigate = useNavigate();
+
   // Load cart from backend on page load
-  useEffect(() => {
-    if (!userId) return;
+  useEffect(() => { 
+    if (!userId) {
+      setStatus({ type: "error", message: "You must be logged in to view order history." });
+      navigate("/login", { replace: true });
+      return;
+    }
+
     fetch(`http://localhost:5050/cart?userId=${userId}`)
       .then((res) => res.json())
       .then((data) => {
@@ -22,13 +32,20 @@ function FlavorsPage() {
             quantity: item.quantity,
           }));
           setOrder(cartAsOrder);
+          setStatus({type: "success", message: "Successfully loaded cart"})
         }
+        else {
+          setStatus({ type: "error", message: data.message})
+        }
+      }).catch(() => {
+        setStatus({ type: "error", message: "Could not connect to server." });
       });
-  }, [userId]);
+  }, []);
 
   const addToOrder = (flavor) => {
     const existing = order.find((item) => item.id === flavor.id);
     if (existing) {
+      // Update quantity in backend
       fetch("http://localhost:5050/cart", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
@@ -45,6 +62,7 @@ function FlavorsPage() {
           }
         });
     } else {
+      // Add to backend cart
       fetch("http://localhost:5050/cart", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -80,8 +98,15 @@ function FlavorsPage() {
   return (
     <div className="flavors-page">
       <Header />
-      <div className="content">
+      <div className="content"> 
         <FlavorCatalog addToOrder={addToOrder} />
+
+        <h3>Your Order</h3>
+        {status && (
+          <p style={{ color: status.type === "error" ? "red" : "green" }}>
+            {status.message}
+          </p>
+        )}
         <OrderList order={order} setOrder={setOrder} userId={userId} />
         {order.length > 0 && (
           <button onClick={placeOrder}>Place Order</button>
