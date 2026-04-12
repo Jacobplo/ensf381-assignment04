@@ -20,7 +20,6 @@ function OrderList({ order, setOrder, userId }) {
 
   return (
     <>
-      <h3>Your Order</h3>
       <div className="order-list">
         {order.length === 0 && <p>No items in your order.</p>}
         {order.map((item) => (
